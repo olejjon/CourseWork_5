@@ -5,17 +5,18 @@ class JSONSaver:
     pass
 
     def add_vacancy(self, vacancy):
-        text_json = {
-            "title": vacancy.title,
-            "url": vacancy.url,
-            "salary": vacancy.salary,
-            "conditions": vacancy.conditions
-        }
+        for item in vacancy['items']:
+            text_json = {
+                "name": item['name'],
+                "url": item['url'],
+                "salary": item['salary'],
+                "conditions": item['snippet']['requirement']
+            }
 
-        data = json.load(open("vacancy.json"))
-        data.append(text_json)
-        with open('vacancy.json', 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+            data = json.load(open("vacancy.json"))
+            data.append(text_json)
+            with open('vacancy.json', 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2, ensure_ascii=False)
 
 
     def get_vacancies_by_salary(self, salary):
