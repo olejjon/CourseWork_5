@@ -12,42 +12,46 @@ class JobAPI(ABC):
 class SuperJobAPI(JobAPI):
     pass
 
-
-
-    def get_vacancies(self, profession):
+    def get_vacancies(self, name_profession, top_n):
         url = "https://api.superjob.ru/2.0/vacancies/"
+        list_vacancy = []
 
         headers = {
             "X-Api-App-Id": superjob_token
         }
 
-        payload = {
-            'keyword': f'{profession}',
-            'published': 1
+        params = {
+            'profession': name_profession,
+            'published': 1,
+            'not_archive': True
         }
-        res = requests.get(url, headers=headers, params=payload)  # Посылаем запрос к API
+
+        res = requests.get(url, headers=headers, params=params)  # Посылаем запрос к API
         data = res.json()
-        return data
+        for vacancy in data['objects'][:top_n]:
+            list_vacancy.append(vacancy)
+
+        return list_vacancy
 
 
 class HeadHunterAPI(JobAPI):
     pass
 
-    def get_vacancies(self, profession):
+    def get_vacancies(self, name_profession, quantity_per_page):
         params = {
-            'text': f'NAME:{profession}',
-            'per_page': 3
+            'text': f'NAME:{name_profession}',
+            'page': 1,
+            'per_page': quantity_per_page  # Кол-во вакансий на 1 странице
         }
+
         res = requests.get('https://api.hh.ru/vacancies', params)  # Посылаем запрос к API
         data = res.json()
         return data
 
 
-class Vacancy(JobAPI):
+class Vacancy(JobAPI):   # пока не понимаю, где можно использовать???
     def __init__(self, name, url, salary, conditions):
         self.name = name
         self.url = url
         self.salary = salary
         self.conditions = conditions
-
-

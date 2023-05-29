@@ -1,30 +1,24 @@
 from class_api.class_api import HeadHunterAPI, SuperJobAPI, Vacancy
 from class_api.json_saver import JSONSaver
+import pandas as pd
 
 # Создание экземпляра класса для работы с API сайтов с вакансиями
 hh_api = HeadHunterAPI()
 superjob_api = SuperJobAPI()
-
-# Получение вакансий с разных платформ
-hh_vacancies = hh_api.get_vacancies("Python")
-superjob_vacancies = superjob_api.get_vacancies("Python")
-
-# Создание экземпляра класса для работы с вакансиями
-# vacancy = Vacancy("Python Developer", "<https://hh.ru/vacancy/123456>", "100 000-150 000 руб.",
-#                   "Требования: опыт работы от 3 лет...")
-
-# Сохранение информации о вакансиях в файл
-# json_saver = JSONSaver()
-# json_saver.add_vacancy(vacancy)
-# json_saver.get_vacancies_by_salary("100 000-150 000 руб.")
-# json_saver.delete_vacancy(vacancy)
-
+json_saver = JSONSaver()
 
 # Функция для взаимодействия с пользователем
 def filter_vacancies(hh_vacancies, superjob_vacancies, filter_words):
-    print(hh_vacancies)
     json_saver = JSONSaver()
-    json_saver.add_vacancy(hh_vacancies)
+    # json_saver.add_vacancy(hh_vacancies)
+    json_saver.add_vacancy(superjob_vacancies)
+    list_sort_vacancy = json_saver.data_filter(filter_words)
+    print(list_sort_vacancy)
+
+    df = pd.DataFrame(list_sort_vacancy)
+    writer = pd.ExcelWriter('list_vacancies.xlsx', engine='xlsxwriter')
+    df.to_excel(writer, sheet_name='welcome', index=True)
+    writer._save()
 
 
 def user_interaction():
@@ -33,15 +27,11 @@ def user_interaction():
     top_n = int(input("Введите количество вакансий для вывода в топ N: "))
     filter_words = input("Введите ключевые слова для фильтрации вакансий: ").split()
 
-    filtered_vacancies = filter_vacancies(hh_vacancies, superjob_vacancies, filter_words)
-    #
-    # if not filtered_vacancies:
-    #     print("Нет вакансий, соответствующих заданным критериям.")
-    #     return
-    #
-    # sorted_vacancies = sort_vacancies(filtered_vacancies)
-    # top_vacancies = get_top_vacancies(sorted_vacancies, top_n)
-    # print_vacancies(top_vacancies)
+    hh_vacancies = hh_api.get_vacancies(search_query, top_n)
+    superjob_vacancies = superjob_api.get_vacancies(search_query, top_n)
+
+    filter_vacancies(hh_vacancies, superjob_vacancies, filter_words)
+
 
 
 if __name__ == "__main__":
