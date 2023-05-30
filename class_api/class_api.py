@@ -12,6 +12,8 @@ class SuperJobAPI(JobAPI):
     pass
 
     def get_vacancies(self, name_profession, top_n):
+        """Получается данные по запросу на superjob с параметрами"""
+
         url = "https://api.superjob.ru/2.0/vacancies/"
         list_vacancy = []
 
@@ -38,6 +40,8 @@ class HeadHunterAPI(JobAPI):
     pass
 
     def get_vacancies(self, name_profession, quantity_per_page):
+        """Получается данные по запросу на hh с параметрами"""
+
         params = {
             'text': f'NAME:{name_profession}',
             'page': 1,
@@ -54,8 +58,9 @@ class HeadHunterAPI(JobAPI):
 
 
 class Vacancy(JobAPI):  # пока не понимаю, где можно использовать???
+    """Класс вакансии"""
     def __init__(self, name, url, salary, conditions):
         self.name = name
         self.url = url
         self.salary = salary
-        self.conditions = conditions
+        self.conditions = conditions.lower()
