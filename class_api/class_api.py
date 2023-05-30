@@ -8,7 +8,6 @@ from constants import superjob_token
 class JobAPI(ABC):
     pass
 
-
 class SuperJobAPI(JobAPI):
     pass
 
@@ -34,6 +33,7 @@ class SuperJobAPI(JobAPI):
         return list_vacancy
 
 
+
 class HeadHunterAPI(JobAPI):
     pass
 
@@ -44,12 +44,16 @@ class HeadHunterAPI(JobAPI):
             'per_page': quantity_per_page  # Кол-во вакансий на 1 странице
         }
 
+        list_vacancy = []
         res = requests.get('https://api.hh.ru/vacancies', params)  # Посылаем запрос к API
         data = res.json()
-        return data
+        for vacancy in data['items']:
+            list_vacancy.append(vacancy)
+
+        return list_vacancy
 
 
-class Vacancy(JobAPI):   # пока не понимаю, где можно использовать???
+class Vacancy(JobAPI):  # пока не понимаю, где можно использовать???
     def __init__(self, name, url, salary, conditions):
         self.name = name
         self.url = url
