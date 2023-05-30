@@ -26,9 +26,9 @@ def filter_vacancies(hh_vacancies, superjob_vacancies, filter_words):
 
 def user_interaction():
     platforms = ["HeadHunter", "SuperJob"]
-    search_query = 'python' # input("Введите поисковый запрос: ")
-    top_n = 2 # int(input("Введите количество вакансий для вывода в топ N: "))
-    filter_words = 'высшее образование' # input("Введите ключевые слова для фильтрации вакансий: ").split()
+    search_query = input("Введите поисковый запрос: ")
+    top_n = int(input("Введите количество вакансий для вывода в топ N: "))
+    filter_words = input("Введите ключевые слова для фильтрации вакансий: ").split()
 
     hh_vacancies = hh_api.get_vacancies(search_query, top_n)
     superjob_vacancies = superjob_api.get_vacancies(search_query, top_n)
